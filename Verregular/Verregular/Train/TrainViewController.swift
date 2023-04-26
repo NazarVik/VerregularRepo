@@ -81,6 +81,7 @@ final class TrainViewController: UIViewController {
     }()
     
     //MARK: - Properties
+    private var scores = 0
     private let edgeInsets = 30
     private let dataSource = IrregularVerbs.shared.selectedVerbs
     private var currentVerb: Verb? {
@@ -122,8 +123,15 @@ final class TrainViewController: UIViewController {
     @objc
     private func checkAction() {
         if checkAnswers() {
+            scores += 1
+            if currentVerb?.infinitive == dataSource.last?.infinitive {
+                showAlert()
+                //navigationController?.popViewController(animated: true)
+            }
+            
             count += 1
         } else {
+            scores -= 1
             checkButton.backgroundColor = .red
             checkButton.setTitle("Try again".localized, for: .normal)
         }
@@ -132,6 +140,18 @@ final class TrainViewController: UIViewController {
     private func checkAnswers() -> Bool {
         pastSimpleTextField.text?.lowercased() == currentVerb?.pastSimple.lowercased() &&
         participleTextField.text?.lowercased() == currentVerb?.participle.lowercased()
+    }
+    
+    private func showAlert() {
+        let alert = UIAlertController(title: "Training finished".localized, message: "You scored \(scores) points".localized, preferredStyle: .alert)
+        
+        let actionFinished = UIAlertAction(title: "Finished".localized, style: .default) { action in
+            self.navigationController?.popViewController(animated: true)
+        }
+        //let actionAgain = UIAlertAction(title: "Again".localized, style: .default)
+        //alert.addAction(actionAgain)
+        alert.addAction(actionFinished)
+        self.present(alert,animated: true)
     }
     
     private func setupUI() {
@@ -227,6 +247,8 @@ private extension TrainViewController {
     @objc
     func keyboardWillHide() {
         scrollView.contentInset.bottom = .zero - 50
+        checkButton.backgroundColor = .systemGray5
+        checkButton.setTitle("Check".localized, for: .normal)
     }
     
     func hideKeyboardWhenTappedAround() {
