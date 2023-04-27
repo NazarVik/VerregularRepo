@@ -10,7 +10,7 @@ import SnapKit
 
 final class SelectVerbsViewController: UITableViewController {
     // MARK: Properties
-    private var dataSource = IrregularVerbs()
+    private var dataSource = IrregularVerbs.shared
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -19,7 +19,6 @@ final class SelectVerbsViewController: UITableViewController {
         title = "Select verbs".localized
         view.backgroundColor = .white
         tableView.register(SelectVerbTableViewCell.self, forCellReuseIdentifier: "SelectVerbTableViewCell")
-        dataSource.configureVerbs()
     }
     
     // MARK: - Private methods

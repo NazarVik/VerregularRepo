@@ -30,7 +30,6 @@ final class SelectVerbTableViewCell: UITableViewCell {
         view.image = State.unselect.image
         view.contentMode = .center
         
-        
         return view
     }()
     
@@ -99,7 +98,6 @@ final class SelectVerbTableViewCell: UITableViewCell {
         translationLabel.text = verb.translate
         pastLabel.text = verb.pastSimple
         participleLabel.text = verb.participle
-        
         checkboxImageView.image = isSelected ? State.select.image : State.unselect.image
     }
     
