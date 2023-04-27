@@ -30,7 +30,6 @@ final class TrainViewController: UIViewController {
     }()
     
     private lazy var pastSimpleLabel: UILabel = {
-        
         let label = UILabel()
         
         label.font = .boldSystemFont(ofSize: 14)
@@ -81,6 +80,7 @@ final class TrainViewController: UIViewController {
     }()
     
     //MARK: - Properties
+    private var wasWrongAnswer = false
     private var scores = 0
     private let edgeInsets = 30
     private let dataSource = IrregularVerbs.shared.selectedVerbs
@@ -123,15 +123,19 @@ final class TrainViewController: UIViewController {
     @objc
     private func checkAction() {
         if checkAnswers() {
-            scores += 1
+            if wasWrongAnswer {
+                wasWrongAnswer = false
+            } else {
+                scores += 1
+            }
+            
             if currentVerb?.infinitive == dataSource.last?.infinitive {
                 showAlert()
-                //navigationController?.popViewController(animated: true)
             }
             
             count += 1
         } else {
-            scores -= 1
+            wasWrongAnswer = true
             checkButton.backgroundColor = .red
             checkButton.setTitle("Try again".localized, for: .normal)
         }
@@ -143,13 +147,12 @@ final class TrainViewController: UIViewController {
     }
     
     private func showAlert() {
-        let alert = UIAlertController(title: "Training finished".localized, message: "You scored \(scores) points".localized, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Training finished".localized, message: "You scores \(scores) points".localized, preferredStyle: .alert)
         
         let actionFinished = UIAlertAction(title: "Finished".localized, style: .default) { action in
             self.navigationController?.popViewController(animated: true)
         }
-        //let actionAgain = UIAlertAction(title: "Again".localized, style: .default)
-        //alert.addAction(actionAgain)
+    
         alert.addAction(actionFinished)
         self.present(alert,animated: true)
     }
@@ -234,7 +237,6 @@ private extension TrainViewController {
     func unregisterForKeyboardNotification() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-        
     }
     
     @objc
@@ -247,6 +249,7 @@ private extension TrainViewController {
     @objc
     func keyboardWillHide() {
         scrollView.contentInset.bottom = .zero - 50
+        
         checkButton.backgroundColor = .systemGray5
         checkButton.setTitle("Check".localized, for: .normal)
     }
